@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>QAT Results – Class Record</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+:root{color-scheme:dark;--bg:#080a10;--card:#121623;--card2:#1a2033;--line:#27304a;--tx:#eef1f9;--mut:#8f98b3;--ac:#5b8cff;--g:#22d3a6;--y:#f5b942;--o:#ff8a4c;--r:#ff5d6c;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:radial-gradient(1200px 500px at 50% -100px,#16204a 0,var(--bg) 60%) fixed;color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.4}
+.wrap{max-width:1000px;margin:0 auto;padding:14px}
+header{text-align:center;padding:8px 0 12px}
+h1{margin:0;font-size:1.55rem}
+h1 span{background:linear-gradient(90deg,var(--ac),var(--g));-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mut);font-size:.85rem;margin-top:4px}
+input,button,select{font:inherit}
+button{background:var(--card2);color:var(--tx);border:1px solid var(--line);padding:11px 14px;border-radius:12px;cursor:pointer}
+button:hover{border-color:var(--ac)}
+button.on{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}
+.srow{display:flex;gap:8px}
+.search{flex:1;min-width:0;background:var(--card);border:2px solid var(--line);color:var(--tx);padding:14px;border-radius:14px;outline:none;font-size:1rem}
+.search:focus{border-color:var(--ac)}
+.nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}
+.nav button{padding:14px 6px;font-size:.95rem}
+.nav small{display:block;color:inherit;opacity:.75;font-size:.7rem;font-weight:400}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;align-items:center}
+.lbl{color:var(--mut);font-size:.85rem;margin-top:10px}
+.hint{color:var(--mut);font-size:.82rem;margin:8px 0}
+.help{background:#16224a;border:1px solid #28407f;border-radius:12px;padding:10px 12px;font-size:.85rem;margin:8px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:10px}
+.stu{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:left;position:relative}
+.stu b{font-size:1.1rem}
+.stu span{display:block;color:var(--mut);font-size:.78rem;margin:2px 0 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bdg{display:inline-block;font-size:.75rem;font-weight:700;padding:2px 9px;border-radius:99px;color:#0b0d12}
+.bar{height:6px;border-radius:9px;background:var(--card2);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;border-radius:9px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:12px}
+.top{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.ring{width:96px;height:96px;border-radius:50%;display:grid;place-items:center;flex:none}
+.ring i{width:72px;height:72px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-style:normal;font-weight:800;font-size:1.1rem}
+.info{flex:1;min-width:180px}
+.info h2{margin:0;font-size:1.25rem}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.chip{background:var(--card2);border-radius:10px;padding:6px 10px;font-size:.82rem}
+.chip b{color:var(--tx)}
+.name{background:var(--card2);border:1px solid var(--line);color:var(--tx);padding:11px 12px;border-radius:10px;width:100%;margin:12px 0 4px;outline:none}
+.sb{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px}
+.sb>div{background:var(--card2);border-radius:12px;padding:10px}
+.sb small{color:var(--mut)}
+.scroll{overflow-x:auto;margin-top:12px}
+table{border-collapse:collapse;width:100%;min-width:470px}
+th,td{padding:6px;text-align:center;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-size:.78rem}
+td:first-child,th:first-child{text-align:left;white-space:nowrap}
+.cell{width:64px;background:var(--card2);border:2px solid var(--line);color:var(--tx);padding:8px 4px;border-radius:9px;text-align:center;outline:none;font-weight:600}
+.cell:focus{border-color:var(--ac)}
+.cell.g{border-color:#14795f;background:#0f2a26}.cell.b{border-color:#2d4a99;background:#121d3d}.cell.y{border-color:#8a6a1e;background:#2b2411}.cell.r{border-color:#8f2e3b;background:#2d141a}
+.tot{color:var(--g);font-weight:700}
+tfoot td{border-top:2px solid var(--line);border-bottom:0;font-weight:700}
+.rk{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px;width:100%;text-align:left}
+.rk .pos{width:38px;text-align:center;font-size:1.2rem;font-weight:800}
+.rk .nm{flex:1;min-width:0}
+.rk .nm span{display:block;color:var(--mut);font-size:.78rem}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:10px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.box small{display:block;color:var(--mut);font-size:.75rem}
+.box strong{font-size:1.25rem}
+#toast{position:fixed;right:14px;top:calc(env(safe-area-inset-top,0px) + 10px);background:#0f2a26;border:1px solid #14795f;color:var(--g);padding:7px 12px;border-radius:99px;font-size:.82rem;opacity:0;transition:opacity .25s;pointer-events:none;z-index:20}
+#toast.show{opacity:1}
+.msg{color:var(--r);margin-top:8px}
+html{-webkit-text-size-adjust:100%}
+button{min-height:44px;touch-action:manipulation}
+.stu .bdg{display:inline-block;color:#0b0d12;margin:0}
+@media(max-width:600px){
+.wrap{padding:10px}
+h1{font-size:1.3rem}
+.nav{gap:6px}.nav button{padding:10px 2px;font-size:.85rem}.nav small{font-size:.62rem}
+.card{padding:10px;border-radius:14px}
+table{min-width:0}
+th,td{padding:5px 1px}
+th{font-size:.66rem}
+td:first-child,th:first-child{font-size:.8rem}
+.cell{width:100%;max-width:50px;padding:9px 0;font-size:16px}
+.grid{grid-template-columns:repeat(2,1fr);gap:8px}
+.top{gap:10px}.ring{width:84px;height:84px}.ring i{width:62px;height:62px;font-size:1rem}
+.info{min-width:0}.info h2{font-size:1.1rem}
+.sb{grid-template-columns:1fr 1fr;gap:8px}
+.rk{padding:9px}
+}
+@media print{body{background:#fff;color:#000}.noprint{display:none!important}.card,.cell,.name,.sb div{background:#fff!important;color:#000;border-color:#999!important}.ring i{background:#fff}}
+</style>
+</head>
+<body>
+<div id="toast">✔ Save ho gaya</div>
+<div class="wrap">
+<header>
+<h1>📊 <span>QAT Results</span></h1>
+<div class="sub">Section A (25) • Section B (20) • 10 QAT Tests • Har Test /25</div>
+</header>
+
+<div class="srow noprint">
+<input id="q" class="search" placeholder="🔍 Roll No likhein (jaise A12, B5 ya 7)" autocomplete="off">
+<button id="clr">✖</button>
+</div>
+<div id="found" class="noprint"></div>
+
+<div class="nav noprint">
+<button id="n1" class="on">👥 Students<small>Sab bachon ka result</small></button>
+<button id="n2">✏️ Number Likhein<small>Ek test ke sab number</small></button>
+<button id="n3">🏆 Position<small>Kaun kaun aage hai</small></button>
+</div>
+
+<div id="main"></div>
+
+</div>
+
+<script>
+var SUB=[['eng','English'],['urdu','Urdu'],['math','Math'],['sci','Science']];
+var NT=10,MAX=25,KEY='qat_class_data_v1';
+var COUNT={A:25,B:20};
+var data={};
+try{data=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){data={}}
+var page=1,sec='A',cur=null,tmr=null;
+var ent={sec:'A',t:1,s:'eng'},rk='A';
+
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}
+  var t=$('toast');t.classList.add('show');clearTimeout(tmr);tmr=setTimeout(function(){t.classList.remove('show')},900);
+}
+function rec(id){if(!data[id])data[id]={name:'',m:{}};return data[id]}
+function val(id,t,s){var r=data[id];if(!r)return null;var v=r.m[t+'_'+s];return(v===undefined||v==='')?null:Number(v)}
+function stats(id){
+  var got=0,n=0,sb={};
+  SUB.forEach(function(s){sb[s[0]]={got:0,n:0}});
+  for(var t=1;t<=NT;t++)SUB.forEach(function(s){var v=val(id,t,s[0]);if(v!==null){got+=v;n++;sb[s[0]].got+=v;sb[s[0]].n++}});
+  return{got:got,n:n,pct:n?got/(n*MAX)*100:0,sb:sb};
+}
+function grade(p){return p>=80?'A+':p>=70?'A':p>=60?'B':p>=50?'C':p>=40?'D':'F'}
+function col(p){return p>=75?'var(--g)':p>=60?'var(--ac)':p>=40?'var(--y)':'var(--r)'}
+function cc(v){if(v===null)return'';var p=v/MAX*100;return p>=75?'g':p>=60?'b':p>=40?'y':'r'}
+function ranks(s){
+  var a=[];for(var i=1;i<=COUNT[s];i++){var id=s+i,st=stats(id);if(st.n)a.push({id:id,pct:st.pct,st:st})}
+  a.sort(function(x,y){return y.pct-x.pct});return a;
+}
+function label(id){return id[0]+' - '+id.slice(1)}
+
+/* ---------- Students ---------- */
+function viewStudents(){
+  var h='<div class="row"><button id="sA" class="'+(sec==='A'?'on':'')+'">Section A (25)</button><button id="sB" class="'+(sec==='B'?'on':'')+'">Section B (20)</button></div>';
+  h+='<div class="hint">Kisi bhi student par click karein, uska poora result khul jayega.</div><div class="grid">';
+  for(var i=1;i<=COUNT[sec];i++){
+    var id=sec+i,r=data[id],st=stats(id),p=st.pct;
+    h+='<button class="stu" data-id="'+id+'"><b>Roll '+label(id)+'</b><span>'+(r&&r.name?esc(r.name):'(naam likhein)')+'</span>';
+    h+=st.n?'<span class="bdg" style="background:'+col(p)+'">'+grade(p)+' • '+p.toFixed(0)+'%</span><div class="bar"><i style="width:'+p+'%;background:'+col(p)+'"></i></div>':'<span class="bdg" style="background:var(--card2);color:var(--mut)">Abhi number nahi</span>';
+    h+='</button>';
+  }
+  $('main').innerHTML=h+'</div>';
+  $('sA').onclick=function(){sec='A';viewStudents()};
+  $('sB').onclick=function(){sec='B';viewStudents()};
+}
+
+/* ---------- Single student result ---------- */
+function zone(id){
+  var st=stats(id),p=st.pct,r=ranks(id[0]),pos=0;
+  r.forEach(function(x,i){if(x.id===id)pos=i+1});
+  var h='<div class="top"><div class="ring" style="background:conic-gradient('+col(p)+' '+p+'%,var(--card2) 0)"><i>'+(st.n?p.toFixed(0)+'%':'-')+'</i></div>';
+  h+='<div class="info"><h2>Roll No '+label(id)+'</h2><div class="chips">';
+  h+='<div class="chip">Grade: <b>'+(st.n?grade(p):'-')+'</b></div>';
+  h+='<div class="chip">Position: <b>'+(pos?pos+' / '+r.length:'-')+'</b></div>';
+  h+='<div class="chip">Total: <b>'+st.got+' / '+st.n*MAX+'</b></div>';
+  h+='<div class="chip">'+(st.n?(p>=33?'✅ Pass':'❌ Fail'):'')+'</div></div></div></div>';
+  h+='<div class="sb">';
+  SUB.forEach(function(s){
+    var b=st.sb[s[0]],sp=b.n?b.got/(b.n*MAX)*100:0;
+    h+='<div><small>'+s[1]+'</small><div><b>'+b.got+'</b> / '+b.n*MAX+' &nbsp; <span style="color:'+col(sp)+'">'+(b.n?sp.toFixed(0)+'%':'')+'</span></div><div class="bar"><i style="width:'+sp+'%;background:'+col(sp)+'"></i></div></div>';
+  });
+  return h+'</div>';
+}
+function openStu(id){
+  cur=id;if(location.hash!=='#result')location.hash='result';var r=rec(id);
+  var h='<div class="card"><div class="row noprint"><button id="back">⬅ Wapas</button><button onclick="window.print()">🖨 Print</button></div><div id="zone">'+zone(id)+'</div>';
+  h+='<input class="name noprint" id="nm" placeholder="Student ka naam likhein" value="'+esc(r.name)+'">';
+  h+='<div class="hint">Number 0 se 25 ke darmiyan likhein. Rang: 🟢 bohat acha • 🔵 acha • 🟡 theek • 🔴 kamzor</div>';
+  h+='<div class="scroll"><table><thead><tr><th>QAT</th>';
+  SUB.forEach(function(s){h+='<th>'+s[1]+'</th>'});
+  h+='<th>Total /100</th></tr></thead><tbody>';
+  for(var t=1;t<=NT;t++){
+    h+='<tr><td>Test '+t+'</td>';
+    SUB.forEach(function(s){var v=val(id,t,s[0]);h+='<td><input class="cell '+cc(v)+'" type="number" inputmode="decimal" min="0" max="'+MAX+'" data-t="'+t+'" data-s="'+s[0]+'" enterkeyhint="next" value="'+(v===null?'':v)+'"></td>'});
+    h+='<td class="tot" id="rt'+t+'"></td></tr>';
+  }
+  h+='</tbody><tfoot><tr><td>Total</td>';
+  SUB.forEach(function(s){h+='<td id="st_'+s[0]+'"></td>'});
+  h+='<td id="gt"></td></tr></tfoot></table></div></div>';
+  $('main').innerHTML=h;
+  $('back').onclick=function(){if(location.hash==='#result')history.back();else{cur=null;render()}};
+  calc();window.scrollTo({top:0,behavior:'smooth'});
+}
+function calc(){
+  var gt=0,any=false;
+  for(var t=1;t<=NT;t++){
+    var sum=0,a=false;
+    SUB.forEach(function(s){var v=val(cur,t,s[0]);if(v!==null){sum+=v;a=true}});
+    $('rt'+t).textContent=a?sum:'';
+  }
+  SUB.forEach(function(s){
+    var sum=0,a=false;
+    for(var t=1;t<=NT;t++){var v=val(cur,t,s[0]);if(v!==null){sum+=v;a=true}}
+    $('st_'+s[0]).textContent=a?sum:'';gt+=sum;if(a)any=true;
+  });
+  $('gt').textContent=any?gt:'';
+  $('zone').innerHTML=zone(cur);
+}
+
+/* ---------- Bulk entry ---------- */
+function viewEntry(){
+  var h='<div class="help">📝 <b>Kaise use karein:</b> Section, Test aur Subject chunein. Phir sab bachon ke number ek hi list mein likhte jayein. Har number khud save hota hai.</div>';
+  h+='<div class="lbl">1) Section</div><div class="row"><button data-k="sec" data-v="A" class="'+(ent.sec==='A'?'on':'')+'">Section A</button><button data-k="sec" data-v="B" class="'+(ent.sec==='B'?'on':'')+'">Section B</button></div>';
+  h+='<div class="lbl">2) QAT Test</div><div class="row">';
+  for(var t=1;t<=NT;t++)h+='<button data-k="t" data-v="'+t+'" class="'+(ent.t===t?'on':'')+'" style="min-width:48px">'+t+'</button>';
+  h+='</div><div class="lbl">3) Subject</div><div class="row">';
+  SUB.forEach(function(s){h+='<button data-k="s" data-v="'+s[0]+'" class="'+(ent.s===s[0]?'on':'')+'">'+s[1]+'</button>'});
+  var sn='';SUB.forEach(function(s){if(s[0]===ent.s)sn=s[1]});
+  h+='</div><div class="card"><h2 style="margin:0 0 8px;font-size:1.1rem">Section '+ent.sec+' • QAT '+ent.t+' • '+sn+' <small style="color:var(--mut)">(/'+MAX+')</small></h2><div class="scroll"><table style="min-width:0"><thead><tr><th>Roll No</th><th>Naam</th><th>Number</th></tr></thead><tbody>';
+  for(var i=1;i<=COUNT[ent.sec];i++){
+    var id=ent.sec+i,v=val(id,ent.t,ent.s),r=data[id];
+    h+='<tr><td><b>'+label(id)+'</b></td><td style="text-align:left;color:var(--mut)">'+(r&&r.name?esc(r.name):'-')+'</td><td><input class="cell '+cc(v)+'" type="number" inputmode="decimal" min="0" max="'+MAX+'" data-id="'+id+'" enterkeyhint="next" value="'+(v===null?'':v)+'"></td></tr>';
+  }
+  $('main').innerHTML=h+'</tbody></table></div></div>';
+}
+
+/* ---------- Position ---------- */
+function viewRank(){
+  var h='<div class="row"><button data-r="A" class="'+(rk==='A'?'on':'')+'">Section A</button><button data-r="B" class="'+(rk==='B'?'on':'')+'">Section B</button><button data-r="AB" class="'+(rk==='AB'?'on':'')+'">Dono (45)</button></div>';
+  var a=[];if(rk!=='B')a=a.concat(ranks('A'));if(rk!=='A')a=a.concat(ranks('B'));
+  a.sort(function(x,y){return y.pct-x.pct});
+  if(!a.length){$('main').innerHTML=h+'<div class="help">Abhi koi number nahi likha gaya. Pehle “✏️ Number Likhein” se number bharein.</div>';bindRank();return}
+  var avg=a.reduce(function(s,x){return s+x.pct},0)/a.length;
+  h+='<div class="sum"><div class="box"><small>Students (number wale)</small><strong>'+a.length+'</strong></div><div class="box"><small>Class Average</small><strong>'+avg.toFixed(1)+'%</strong></div><div class="box"><small>Sab se zyada</small><strong style="color:var(--g)">'+a[0].pct.toFixed(1)+'%</strong></div><div class="box"><small>Sab se kam</small><strong style="color:var(--r)">'+a[a.length-1].pct.toFixed(1)+'%</strong></div></div>';
+  var med=['🥇','🥈','🥉'];
+  a.forEach(function(x,i){
+    var r=data[x.id];
+    h+='<button class="rk" data-id="'+x.id+'"><div class="pos">'+(i<3?med[i]:i+1)+'</div><div class="nm"><b>Roll '+label(x.id)+'</b><span>'+(r&&r.name?esc(r.name):'')+'</span></div><span class="bdg" style="background:'+col(x.pct)+'">'+grade(x.pct)+' • '+x.pct.toFixed(1)+'%</span></button>';
+  });
+  $('main').innerHTML=h;bindRank();
+}
+function bindRank(){
+  document.querySelectorAll('[data-r]').forEach(function(b){b.onclick=function(){rk=b.dataset.r;viewRank()}});
+}
+
+/* ---------- Routing & events ---------- */
+function render(){
+  ['n1','n2','n3'].forEach(function(n,i){$(n).className=(page===i+1)?'on':''});
+  if(cur)return openStu(cur);
+  if(page===1)viewStudents();else if(page===2)viewEntry();else viewRank();
+}
+['n1','n2','n3'].forEach(function(n,i){$(n).onclick=function(){page=i+1;cur=null;$('found').innerHTML='';render()}});
+
+$('main').addEventListener('click',function(e){
+  var b=e.target.closest('[data-id]');
+  if(b&&b.tagName==='BUTTON'){openStu(b.dataset.id);return}
+  var k=e.target.closest('[data-k]');
+  if(k){var v=k.dataset.v;ent[k.dataset.k]=(k.dataset.k==='t')?parseInt(v,10):v;viewEntry()}
+});
+$('main').addEventListener('input',function(e){
+  var el=e.target;
+  if(el.id==='nm'){rec(cur).name=el.value;save();return}
+  if(!el.classList.contains('cell'))return;
+  var v=el.value;
+  if(v!==''){var n=parseFloat(v);if(isNaN(n))v='';else{if(n<0)n=0;if(n>MAX)n=MAX;if(String(n)!==v)el.value=n;v=n}}
+  var id,t,s;
+  if(cur){id=cur;t=el.dataset.t;s=el.dataset.s}else{id=el.dataset.id;t=ent.t;s=ent.s}
+  rec(id).m[t+'_'+s]=v;
+  var c=cc(v===''?null:Number(v));
+  el.className='cell '+c;
+  save();
+  if(cur)calc();
+});
+
+$('main').addEventListener('keydown',function(e){
+  if(e.key!=='Enter'||!e.target.classList.contains('cell'))return;
+  e.preventDefault();
+  var all=[].slice.call($('main').querySelectorAll('.cell')),i=all.indexOf(e.target);
+  if(all[i+1]){all[i+1].focus();if(all[i+1].select)all[i+1].select()}else e.target.blur();
+});
+var q=$('q'),found=$('found');
+function doSearch(){
+  var t=q.value.trim().toUpperCase().replace(/[\s\-]/g,'');
+  found.innerHTML='';if(!t)return;
+  var m=t.match(/^([AB])?(\d+)$/),res=[];
+  if(m){var n=parseInt(m[2],10);['A','B'].forEach(function(s){if((!m[1]||m[1]===s)&&n>=1&&n<=COUNT[s])res.push(s+n)})}
+  else Object.keys(data).forEach(function(id){if(data[id].name&&data[id].name.toUpperCase().indexOf(t)>-1)res.push(id)});
+  if(!res.length){found.innerHTML='<div class="msg">❌ Is roll no ka koi student nahi mila.</div>';return}
+  if(res.length===1){openStu(res[0]);return}
+  var h='<div class="hint">Kaunsa result kholna hai?</div><div class="grid">';
+  res.forEach(function(id){h+='<button class="stu" data-fid="'+id+'"><b>Roll '+label(id)+'</b><span>'+esc(data[id]&&data[id].name||'')+'</span></button>'});
+  found.innerHTML=h+'</div>';
+}
+q.addEventListener('input',doSearch);
+found.addEventListener('click',function(e){var b=e.target.closest('[data-fid]');if(b){found.innerHTML='';openStu(b.dataset.fid)}});
+$('clr').onclick=function(){q.value='';found.innerHTML=''};
+
+window.addEventListener('hashchange',function(){if(location.hash!=='#result'&&cur){cur=null;render()}});
+render();
+</script>
+</body>
+</html>
